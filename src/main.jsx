@@ -19,7 +19,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <Fragment>
     {/* <Register></Register> */}
     {/* <App></App> */}
-    <ApplicantDash></ApplicantDash>
+    {/* <ApplicantDash></ApplicantDash>*/}
     {/* <Login></Login> */}
     {/* <LoginForm></LoginForm> */}
     {/* <FranchHome></FranchHome> */}
@@ -27,7 +27,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     {/* <Charts></Charts> */}
     {/* <ChartGallery></ChartGallery> */}
     {/* <AnimatedVibrantCharts></AnimatedVibrantCharts> */}
-    {/* <ScrollAnimations></ScrollAnimations> */}
+    <ScrollAnimations></ScrollAnimations>
     {/* <ColourCardAn></ColourCardAn> */}
     {/* <StartHomepage></StartHomepage> */}
   </Fragment>
