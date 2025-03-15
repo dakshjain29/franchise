@@ -1,0 +1,35 @@
+.box
+{
+    width: 300px; 
+    height: 300px;
+    border: 1 px rgb(146, 26, 26) solid;
+    background-color: rgb(170, 128, 128);
+    margin: 10px;
+    float:left
+
+}
+.body
+{
+    background-color: gainsboro;
+
+}
+.outer
+{
+    display: flex;
+    border: 1px red solid;
+    width: 100%;
+   
+    justify-content:  center;
+    flex-wrap: wrap;
+
+}
+.combo{
+    margin: auto;
+}
+.full-page
+{
+    display: flex;
+    justify-content: center;
+    /* border: 1px blue solid;; */
+    flex-direction: column;
+}
