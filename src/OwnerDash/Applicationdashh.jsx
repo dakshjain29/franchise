@@ -92,7 +92,7 @@ const Applicantdashh = () => {
   }
 
   function dorendercard(object, index) {
-    return <AppCard key={index} {...object} showfulldetail={showfull} onAccept={Acceptapp} onReject={rejectapp} onFranchise={franchiseapp} />;
+    return <AppCard key={index} {...object}  onAccept={Acceptapp} onReject={rejectapp} onFranchise={franchiseapp} />;
   }
 
   useEffect(() => {
