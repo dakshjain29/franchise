@@ -25,7 +25,7 @@ const FranchSideBar = () => {
   const navItems = [
     { id: '/frDashboard', label: 'Home', icon: <Home size={20} /> },
     { id: '/frDashboard/sales', label: 'Sales', icon: <TrendingUp size={20} /> },
-    { id: '/frDashboard/employees', label: 'Employees', icon: <Users size={20} /> },
+    // { id: '/frDashboard/employees', label: 'Employees', icon: <Users size={20} /> },
     { id: '/frDashboard/history', label: 'History', icon: <History size={20} /> },
     { id: '/frDashboard/charts', label: 'Charts', icon: <BarChart2 size={20} /> },
     { id: '/frDashboard/settings', label: 'Settings', icon: <Settings size={20} /> },

@@ -29,7 +29,7 @@ function HistoryPage({email}) {
           const fromDateIso = new Date(dateRange.fromDate).toISOString();
           const toDateIso = new Date(dateRange.toDate + 'T23:59:59').toISOString();
         
-          let url = "http://localhost:2008/franchise/fetchSales";
+          let url = `https://franchisebackend-production.up.railway.app/franchise/fetchSales`;
           let resp = await axios.post(url,{email:email,fromdate:fromDateIso,todate:toDateIso},{headers:{"Content-Type":"application/x-www-form-urlencoded"}});
           console.log(resp.data.appdata);
           if (resp.data.status == true) {

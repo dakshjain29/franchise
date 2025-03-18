@@ -49,7 +49,7 @@ function SettingsPage({email}) {
         try {
           // Simulate API call
           alert("inside the function login A")
-        let url = `http://localhost:2008/franchise/changepwd`;
+        let url = `https://franchisebackend-production.up.railway.app/franchise/changepwd`;
         let resp = await axios.post(url,{fremail:email,npass:formData.newPassword},{headers:{"Content-Type":"application/x-www-form-urlencoded"}});
         
         if(resp.data.status){

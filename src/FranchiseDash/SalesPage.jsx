@@ -37,7 +37,7 @@ function SalesPage({email}) {
           // Simulate API call
           alert("inside the function handlesubmit sales")
           console.log(salesData);
-          let url = `http://localhost:2008/franchise/saveSales`;
+          let url = `https://franchisebackend-production.up.railway.app/franchise/saveSales`;
           let resp = await axios.post(url,salesData,{headers:{"Content-Type":"application/x-www-form-urlencoded"}});
         
           if(resp.data.status){

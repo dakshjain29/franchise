@@ -75,20 +75,26 @@ const LoginForm = () => {
       setSubmitStatus('');
       var {email,password} = formData;
       try {
-        // // Simulate API call
+        // Simulate API call
         // await new Promise(resolve => setTimeout(resolve, 1000));
         alert("inside the function login A")
-        let url = `http://localhost:2008/franchise/loginFranchise`;
+        let url = `https://franchisebackend-production.up.railway.app/franchise/loginFranchise`;
         let resp = await axios.post(url,{fremail:email,pass:password},{headers:{"Content-Type":"application/x-www-form-urlencoded"}});
         console.log(resp.data.appdata);
         if(resp.data.appdata.length==0){
             alert("Invalid Credentials");
         }
         else{
+            if(resp.data.appdata.email=="djain_be23@thapar.edu"){
+              localStorage.setItem("email",email)
+              fnavigate("/ownerDashboard");
+            }
+            else{
             localStorage.setItem("email",email)
             setSubmitStatus('success');
             fnavigate("/frDashboard");
             console.log('Form submitted:', formData);
+            }
             
         }
         

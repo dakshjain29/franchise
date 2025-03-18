@@ -48,7 +48,7 @@ const FranchHome = () => {
         <Routes>
           <Route path="/" element={<HomePage></HomePage>} />
           <Route path="/sales" element={<SalesPage email={em}></SalesPage>} />
-          <Route path="/employees" element={<EmployeesPage email={em} />} />
+          {/* <Route path="/employees" element={<EmployeesPage email={em} />} /> */}
           <Route path="/history" element={<HistoryPage email={em} />} />
           <Route path="/charts" element={<ChartsPage email={em} />} />
           <Route path="/settings" element={<SettingsPage email={em}/>} />

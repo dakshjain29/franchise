@@ -13,6 +13,10 @@ import ChartGallery from './testing/ChartGallery.jsx'
 import AnimatedVibrantCharts from './testing/AnimatedVibrantCharts.jsx'
 import ScrollAnimations from './testing/ScrollAnimations.jsx'
 import StartHomepage from './OwnerDash/StartHomepage.jsx'
+import CandidateTopbar from './testing/CandidateTopbar.jsx'
+import Candidatetop from './testing/Candidatetop.jsx'
+import Applicantdashh from './OwnerDash/Applicationdashh.jsx'
+import Landingpage from './LandingPage/Landingpage.jsx'
 // import ColourCardAn from './testing/ColourCardAn.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -23,12 +27,16 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     {/* <Login></Login> */}
     {/* <LoginForm></LoginForm> */}
     {/* <FranchHome></FranchHome> */}
-    {/* <App></App> */}
+    <App></App>
     {/* <Charts></Charts> */}
     {/* <ChartGallery></ChartGallery> */}
     {/* <AnimatedVibrantCharts></AnimatedVibrantCharts> */}
-    <ScrollAnimations></ScrollAnimations>
+    {/* <ScrollAnimations></ScrollAnimations> */}
     {/* <ColourCardAn></ColourCardAn> */}
     {/* <StartHomepage></StartHomepage> */}
+    {/* <Candidatetop></Candidatetop> */}
+    {/* <CandidateTopbar></CandidateTopbar> */}
+    {/* <Applicantdashh></Applicantdashh> */}
+    {/* <Landingpage></Landingpage> */}
   </Fragment>
 )
