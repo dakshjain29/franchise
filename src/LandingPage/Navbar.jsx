@@ -71,7 +71,7 @@ const Navbar = () => {
           <div className="navbar-logo">
             <a href="#" className="logo-link">
               <span className="logo-primary">Franchise</span>
-              <span className="logo-secondary">Hub</span>
+              <span className="logo-secondary">360</span>
             </a>
           </div>
 
