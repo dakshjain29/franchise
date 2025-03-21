@@ -1,9 +1,19 @@
 
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
+
 function SettingsPage({email}) {
+  var redirecter = useNavigate();
+  function fnavigate(path)
+  {
+    redirecter(path);
+  }
+
   let LogObj=JSON.parse(localStorage.getItem("LoginObj"));
   let tkn=LogObj.token;
+  
     const [formData, setFormData] = useState({
         currentPassword: '',
         newPassword: '',
@@ -55,14 +65,19 @@ function SettingsPage({email}) {
         let resp = await axios.post(url,{fremail:email,npass:formData.newPassword},{headers: {'authorization' : `Bearer ${tkn}`}});
         
         if(resp.data.status){
-            alert("Done")
-        }
-          setSuccess(true);
+            alert("Done");
+            setSuccess(true);
           setFormData({
             currentPassword: '',
             newPassword: '',
             confirmPassword: ''
           });
+        }
+        else{
+            alert("Token Expired. Please login again")
+            fnavigate("/login");
+        }
+          
         } catch (error) {
             console.error('Error:', error);
           setErrors({ submit: 'Failed to change password. Please try again.' });

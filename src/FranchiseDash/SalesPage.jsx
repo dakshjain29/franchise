@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
 import { Calendar, DollarSign } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+
 import axios from 'axios';
 
 function SalesPage({email}) {
+  var redirecter = useNavigate();
+  function fnavigate(path)
+  {
+    redirecter(path);
+  }
   let LogObj=JSON.parse(localStorage.getItem("LoginObj"));
   let tkn=LogObj.token;
     const [formData, setFormData] = useState({
@@ -54,7 +61,10 @@ function SalesPage({email}) {
               });
               setIsSubmitting(false);
           }
-          
+          else{
+              alert("Token Expired. Please login again")
+              fnavigate("/login");
+          }
           // // Show success message (in a real app, this would be after the API response)
           // setTimeout(() => {
             
