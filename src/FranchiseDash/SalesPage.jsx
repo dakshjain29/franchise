@@ -11,7 +11,7 @@ function SalesPage({email}) {
     redirecter(path);
   }
   let LogObj=JSON.parse(localStorage.getItem("LoginObj"));
-  let tkn=LogObj.token;
+  let tkn=LogObj.tkn;
     const [formData, setFormData] = useState({
         date: new Date().toISOString().split('T')[0],
         amount: ''
@@ -64,6 +64,7 @@ function SalesPage({email}) {
           else{
               alert("Token Expired. Please login again")
               fnavigate("/login");
+              return;
           }
           // // Show success message (in a real app, this would be after the API response)
           // setTimeout(() => {

@@ -12,8 +12,8 @@ function SettingsPage({email}) {
   }
 
   let LogObj=JSON.parse(localStorage.getItem("LoginObj"));
-  let tkn=LogObj.token;
-  
+  let tkn=LogObj.tkn;
+
     const [formData, setFormData] = useState({
         currentPassword: '',
         newPassword: '',
@@ -64,7 +64,13 @@ function SettingsPage({email}) {
         let url = `https://franchisebackend-production.up.railway.app/franchise/changepwd`;
         let resp = await axios.post(url,{fremail:email,npass:formData.newPassword},{headers: {'authorization' : `Bearer ${tkn}`}});
         
-        if(resp.data.status){
+        if(!resp.data.status){
+          alert("Token Expired. Please login again")
+          fnavigate("/login");
+          return;
+        }
+        else{
+            
             alert("Done");
             setSuccess(true);
           setFormData({
@@ -72,10 +78,6 @@ function SettingsPage({email}) {
             newPassword: '',
             confirmPassword: ''
           });
-        }
-        else{
-            alert("Token Expired. Please login again")
-            fnavigate("/login");
         }
           
         } catch (error) {
