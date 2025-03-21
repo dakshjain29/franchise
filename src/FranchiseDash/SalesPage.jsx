@@ -3,6 +3,8 @@ import { Calendar, DollarSign } from 'lucide-react';
 import axios from 'axios';
 
 function SalesPage({email}) {
+  let LogObj=JSON.parse(localStorage.getItem("LoginObj"));
+  let tkn=LogObj.token;
     const [formData, setFormData] = useState({
         date: new Date().toISOString().split('T')[0],
         amount: ''
@@ -38,7 +40,7 @@ function SalesPage({email}) {
           alert("inside the function handlesubmit sales")
           console.log(salesData);
           let url = `https://franchisebackend-production.up.railway.app/franchise/saveSales`;
-          let resp = await axios.post(url,salesData,{headers:{"Content-Type":"application/x-www-form-urlencoded"}});
+          let resp = await axios.post(url,salesData,{headers: {'authorization' : `Bearer ${tkn}`}});
         
           if(resp.data.status){
               alert("Done")

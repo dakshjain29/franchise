@@ -35,7 +35,8 @@ import SettingsPage from './SettingsPage';
 
 // Root app component that sets up the router
 const FranchHome = () => {
-    var em=localStorage.getItem("email");
+    var LogObj=JSON.parse(localStorage.getItem("LoginObj"));
+    var em=LogObj.email;
   return (
     
       <div className="flex h-screen bg-gray-100">

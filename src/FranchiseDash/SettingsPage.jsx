@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 function SettingsPage({email}) {
+  let LogObj=JSON.parse(localStorage.getItem("LoginObj"));
+  let tkn=LogObj.token;
     const [formData, setFormData] = useState({
         currentPassword: '',
         newPassword: '',
@@ -50,7 +52,7 @@ function SettingsPage({email}) {
           // Simulate API call
           alert("inside the function login A")
         let url = `https://franchisebackend-production.up.railway.app/franchise/changepwd`;
-        let resp = await axios.post(url,{fremail:email,npass:formData.newPassword},{headers:{"Content-Type":"application/x-www-form-urlencoded"}});
+        let resp = await axios.post(url,{fremail:email,npass:formData.newPassword},{headers: {'authorization' : `Bearer ${tkn}`}});
         
         if(resp.data.status){
             alert("Done")

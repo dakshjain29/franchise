@@ -90,7 +90,11 @@ const LoginForm = () => {
               fnavigate("/ownerDashboard");
             }
             else{
-            localStorage.setItem("email",email)
+            let LoginObj={
+              "email":email,
+              "tkn":resp.data.token
+            }
+            localStorage.setItem("LoginObj",JSON.stringify(LoginObj));
             setSubmitStatus('success');
             fnavigate("/frDashboard");
             console.log('Form submitted:', formData);
