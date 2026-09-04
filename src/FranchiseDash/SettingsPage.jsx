@@ -1,213 +1,25 @@
+import { useState } from 'react';
+import { CheckCircle2, LockKeyhole } from 'lucide-react';
+import api from '../lib/api';
 
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+function SettingsPage() {
+  const [form, setForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+  const [state, setState] = useState({ saving: false, message: '', error: '' });
 
+  const submit = async (event) => {
+    event.preventDefault();
+    if (form.newPassword !== form.confirmPassword) return setState({ saving: false, message: '', error: 'New passwords do not match.' });
+    setState({ saving: true, message: '', error: '' });
+    try {
+      const response = await api.post('/franchise/changepwd', form);
+      setState({ saving: false, message: response.data.msg || 'Password updated.', error: '' });
+      setForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+    } catch (error) {
+      setState({ saving: false, message: '', error: error.response?.data?.msg || 'Unable to update password.' });
+    }
+  };
 
-function SettingsPage({email}) {
-  var redirecter = useNavigate();
-  function fnavigate(path)
-  {
-    redirecter(path);
-  }
-
-  let LogObj=JSON.parse(localStorage.getItem("LoginObj"));
-  let tkn=LogObj.tkn;
-
-    const [formData, setFormData] = useState({
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: ''
-      });
-      
-      const [errors, setErrors] = useState({});
-      const [isSubmitting, setIsSubmitting] = useState(false);
-      const [success, setSuccess] = useState(false);
-    
-      const validateForm = () => {
-        const newErrors = {};
-        
-        if (!formData.currentPassword) {
-          newErrors.currentPassword = 'Current password is required';
-        }
-        
-        if (!formData.newPassword) {
-          newErrors.newPassword = 'New password is required';
-        } else if (formData.newPassword.length < 8) {
-          newErrors.newPassword = 'Password must be at least 8 characters';
-        }
-        
-        if (!formData.confirmPassword) {
-          newErrors.confirmPassword = 'Please confirm your new password';
-        } else if (formData.newPassword !== formData.confirmPassword) {
-          newErrors.confirmPassword = 'Passwords do not match';
-        }
-        
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-      };
-    
-      const handleSubmit = async (e) => {
-        
-        e.preventDefault();
-        setSuccess(false);
-        
-        if (!validateForm()) {
-          return;
-        }
-        // alert(formData.newPassword)
-        setIsSubmitting(true);
-        
-        try {
-          // Simulate API call
-          alert("inside the function login A")
-        let url = `https://franchisebackend-production.up.railway.app/franchise/changepwd`;
-        let resp = await axios.post(url,{fremail:email,npass:formData.newPassword},{headers: {'authorization' : `Bearer ${tkn}`}});
-        
-        if(!resp.data.status){
-          alert("Token Expired. Please login again")
-          fnavigate("/login");
-          return;
-        }
-        else{
-            
-            alert("Done");
-            setSuccess(true);
-          setFormData({
-            currentPassword: '',
-            newPassword: '',
-            confirmPassword: ''
-          });
-        }
-          
-        } catch (error) {
-            console.error('Error:', error);
-          setErrors({ submit: 'Failed to change password. Please try again.' });
-        } finally {
-          setIsSubmitting(false);
-        }
-      };
-    
-      const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-          ...prev,
-          [name]: value
-        }));
-        // Clear error when user starts typing
-        if (errors[name]) {
-          setErrors(prev => ({
-            ...prev,
-            [name]: ''
-          }));
-        }
-      };
-    
-    
-    
-    
-  return (
-    <div>
-        <div className="w-full max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Change Password</h2>
-      </div>
-      
-      <form onSubmit={handleSubmit}>
-        {success && (
-          <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-md">
-            Password changed successfully!
-          </div>
-        )}
-        
-        {errors.submit && (
-          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
-            {errors.submit}
-          </div>
-        )}
-
-        <div className="mb-4">
-          <label 
-            htmlFor="currentPassword"
-            className="block mb-2 text-sm font-medium text-gray-700"
-          >
-            Current Password
-          </label>
-          <input
-            type="text"
-            id="currentPassword"
-            name="currentPassword"
-            value={formData.currentPassword}
-            onChange={handleChange}
-            className={`w-full p-2 border rounded-md outline-none focus:ring-2 focus:ring-blue-500 ${
-              errors.currentPassword ? 'border-red-500' : 'border-gray-300'
-            }`}
-          />
-          {errors.currentPassword && (
-            <p className="mt-1 text-sm text-red-500">{errors.currentPassword}</p>
-          )}
-        </div>
-
-        <div className="mb-4">
-          <label 
-            htmlFor="newPassword"
-            className="block mb-2 text-sm font-medium text-gray-700"
-          >
-            New Password
-          </label>
-          <input
-            type="text"
-            id="newPassword"
-            name="newPassword"
-            value={formData.newPassword}
-            onChange={handleChange}
-            className={`w-full p-2 border rounded-md outline-none focus:ring-2 focus:ring-blue-500 ${
-              errors.newPassword ? 'border-red-500' : 'border-gray-300'
-            }`}
-          />
-          {errors.newPassword && (
-            <p className="mt-1 text-sm text-red-500">{errors.newPassword}</p>
-          )}
-        </div>
-
-        <div className="mb-6">
-          <label 
-            htmlFor="confirmPassword"
-            className="block mb-2 text-sm font-medium text-gray-700"
-          >
-            Confirm New Password
-          </label>
-          <input
-            type="text"
-            id="confirmPassword"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            className={`w-full p-2 border rounded-md outline-none focus:ring-2 focus:ring-blue-500 ${
-              errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
-            }`}
-          />
-          {errors.confirmPassword && (
-            <p className="mt-1 text-sm text-red-500">{errors.confirmPassword}</p>
-          )}
-        </div>
-
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isSubmitting ? 'Changing Password...' : 'Change Password'}
-        </button>
-      </form>
-    </div>
-  
-    </div>
-  )
+  return <section className="max-w-2xl"><div className="mb-7"><p className="text-sm text-[#718078]">Keep your account secure</p><h2 className="mt-1 text-3xl font-semibold tracking-tight">Settings</h2></div><form onSubmit={submit} className="rounded-xl border border-[#dce2dc] bg-[#fbfcf9] p-6 sm:p-8">{state.message && <p className="mb-5 flex items-center gap-2 rounded-lg bg-[#eef8f0] p-3 text-sm text-[#28613c]"><CheckCircle2 size={17} />{state.message}</p>}{state.error && <p className="mb-5 rounded-lg bg-[#fff3f1] p-3 text-sm text-[#9a3f3b]">{state.error}</p>}<p className="mb-6 flex items-center gap-2 text-sm text-[#718078]"><LockKeyhole size={17} />Use at least eight characters for a new password.</p>{[['currentPassword','Current password'],['newPassword','New password'],['confirmPassword','Confirm new password']].map(([name, label]) => <label key={name} className="mb-5 block text-sm font-medium text-[#35554a]">{label}<input required minLength={name === 'newPassword' ? 8 : undefined} type="password" value={form[name]} onChange={(event) => setForm({ ...form, [name]: event.target.value })} className="mt-2 w-full rounded-lg border border-[#ccd7d0] bg-white px-3 py-3 outline-none focus:border-[#356b59] focus:ring-2 focus:ring-[#dcebe0]" /></label>)}<button disabled={state.saving} className="rounded-lg bg-[#356b59] px-5 py-3 text-sm font-semibold text-white hover:bg-[#2c594a] disabled:opacity-60">{state.saving ? 'Updating...' : 'Update password'}</button></form></section>;
 }
 
-export default SettingsPage
-
-
-
- 
+export default SettingsPage;

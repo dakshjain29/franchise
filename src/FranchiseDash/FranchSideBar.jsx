@@ -1,111 +1,41 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link,useNavigate, useLocation } from 'react-router-dom';
-import { 
-  Home, 
-  TrendingUp, 
-  Users, 
-  History, 
-  BarChart2, 
-  Settings, 
-  LogOut 
-} from 'lucide-react';
+import { useState } from 'react';
+import { BarChart3, ChevronLeft, ChevronRight, History, Home, LogOut, Menu, Settings, TrendingUp, X } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { clearAuth, getAuth } from '../lib/auth';
 
-// Placeholder components for each section
- 
-// Side Navigation component
-const FranchSideBar = () => {
+const navItems = [
+  { id: '/frDashboard', label: 'Overview', icon: Home },
+  { id: '/frDashboard/sales', label: 'Record sales', icon: TrendingUp },
+  { id: '/frDashboard/history', label: 'Sales history', icon: History },
+  { id: '/frDashboard/charts', label: 'Performance', icon: BarChart3 },
+  { id: '/frDashboard/settings', label: 'Settings', icon: Settings },
+];
+
+function FranchSideBar() {
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
-  var redirecter = useNavigate();
-  function fnavigate(path)
-  {
-    redirecter(path);
-  }
-  // Navigation items configuration
-  const navItems = [
-    { id: '/frDashboard', label: 'Home', icon: <Home size={20} /> },
-    { id: '/frDashboard/sales', label: 'Sales', icon: <TrendingUp size={20} /> },
-    // { id: '/frDashboard/employees', label: 'Employees', icon: <Users size={20} /> },
-    { id: '/frDashboard/history', label: 'History', icon: <History size={20} /> },
-    { id: '/frDashboard/charts', label: 'Charts', icon: <BarChart2 size={20} /> },
-    { id: '/frDashboard/settings', label: 'Settings', icon: <Settings size={20} /> },
-  ];
+  const navigate = useNavigate();
+  const auth = getAuth();
 
-  // Handle logout action
-  const handleLogout = () => {
-    fnavigate('/');
-    localStorage.removeItem('email');
-    
+  const logout = () => {
+    clearAuth();
+    navigate('/login');
   };
 
-  return (
-    <div className={`bg-gray-800 text-white transition-all duration-300 h-screen ${collapsed ? 'w-16' : 'w-64'}`}>
-      <div className="flex items-center justify-between p-4 border-b border-gray-700">
-        {!collapsed && <h1 className="text-xl font-bold">Dashboard</h1>}
-        <button 
-          onClick={() => setCollapsed(!collapsed)}
-          className="p-1 rounded hover:bg-gray-700 focus:outline-none"
-        >
-          {collapsed ? '→' : '←'}
-        </button>
+  return <>
+    <button onClick={() => setMobileOpen(true)} className="fixed left-4 top-4 z-20 rounded-lg border border-[#ccd7d0] bg-[#fbfcf9] p-2 text-[#35554a] shadow-sm lg:hidden" title="Open navigation"><Menu size={20} /></button>
+    {mobileOpen && <button onClick={() => setMobileOpen(false)} className="fixed inset-0 z-30 bg-[#23312d]/30 lg:hidden" aria-label="Close navigation" />}
+    <aside className={`${mobileOpen ? 'translate-x-0' : '-translate-x-full'} fixed inset-y-0 left-0 z-40 flex w-72 flex-col border-r border-[#dce2dc] bg-[#fbfcf9] transition-transform lg:static lg:translate-x-0 ${collapsed ? 'lg:w-20' : 'lg:w-64'}`}>
+      <div className="flex items-center justify-between border-b border-[#dce2dc] px-5 py-5">
+        {!collapsed && <div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#668077]">FranchiseHub</p><p className="mt-1 font-semibold">Partner portal</p></div>}
+        <button onClick={() => mobileOpen ? setMobileOpen(false) : setCollapsed(!collapsed)} className="rounded-lg p-2 text-[#668077] hover:bg-[#edf2ed]" title={mobileOpen ? 'Close navigation' : 'Collapse navigation'}>{mobileOpen ? <X size={18} /> : collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}</button>
       </div>
-      
-      <nav className="mt-6">
-        <ul>
-          {navItems.map((item) => {
-            const isActive = location.pathname === item.id || 
-              (location.pathname === '' && item.id === '/');
-            
-            return (
-                // another approach using links if we didnt want to use UseNavigate function 
-                // in this approach  <link  to={path} >  tag is used which will be used to navigate to the page - similar to navigate function
-              <li key={item.id} className="mb-2">
-                <Link
-                  to={item.id}
-                  className={`flex items-center w-full px-4 py-3 transition-colors ${
-                    isActive 
-                      ? 'bg-blue-600 text-white' 
-                      : 'text-gray-300 hover:bg-gray-700'
-                  }`}
-                >
-                  <span className="mr-4">{item.icon}</span>
-                  {!collapsed && <span>{item.label}</span>}
-                </Link>
-              </li>
-
-                // ******************another approach using UseNavigate function ******************
-
-                // <li key={item.id} className="mb-2">
-                // <button
-                // onClick={() => navigate(item.id)}
-                // className={`flex items-center w-full px-4 py-3 transition-colors text-left ${
-                //     isActive 
-                //     ? 'bg-blue-600 text-white' 
-                //     : 'text-gray-300 hover:bg-gray-700'
-                // }`}
-                // >
-                // <span className="mr-4">{item.icon}</span>
-                // {!collapsed && <span>{item.label}</span>}
-                // </button>
-                // </li>
-
-
-            );
-          })}
-        </ul>
-      </nav>
-      
-      <div className="absolute bottom-1 w-64 p-0 border-t border-gray-700">
-        <button
-          onClick={handleLogout}
-          className="flex items-center w-64 px-4 py-3 text-gray-300 transition-colors hover:bg-gray-700"
-        >
-          <span className="mr-4"><LogOut size={20} /></span>
-          {!collapsed && <span>Logout</span>}
-        </button>
-      </div>
-    </div>
-  );
-};
+      <div className="border-b border-[#dce2dc] px-5 py-5"><p className="text-xs uppercase tracking-[0.16em] text-[#8a9890]">Signed in as</p>{!collapsed && <p className="mt-1 truncate text-sm font-medium text-[#35554a]">{auth?.email}</p>}</div>
+      <nav className="flex-1 px-3 py-5"><ul className="space-y-1">{navItems.map(({ id, label, icon: Icon }) => { const active = location.pathname === id || (id === '/frDashboard' && location.pathname === '/frDashboard/'); return <li key={id}><Link onClick={() => setMobileOpen(false)} to={id} className={`flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-colors ${active ? 'bg-[#dcebe0] text-[#2f604d]' : 'text-[#718078] hover:bg-[#edf2ed] hover:text-[#35554a]'}`} title={collapsed ? label : undefined}><Icon size={19} />{!collapsed && label}</Link></li>; })}</ul></nav>
+      <div className="border-t border-[#dce2dc] p-3"><button onClick={logout} className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-[#8b5146] hover:bg-[#fff0ed]" title="Log out"><LogOut size={19} />{!collapsed && 'Log out'}</button></div>
+    </aside>
+  </>;
+}
 
 export default FranchSideBar;

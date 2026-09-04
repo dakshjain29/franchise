@@ -1,66 +1,19 @@
-// App.js
-import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-// import './App.css';
-import HeroSection from './HeroSection';
-import FeaturesSection from './FeaturesSection';
-import BenefitsSection from './BenefitsSection';
-import TestimonialsSection from './TestimonialsSection';
-// import RegistrationForm from './RegistrationForm';
-import Footer from './Footer';
+import { ArrowRight, BarChart3, ClipboardCheck, Headphones, Menu, ShieldCheck, Sparkles, X } from 'lucide-react';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import Register from '../Forms/Register';
-import Navbar from './Navbar';
+import './LandingPage.css';
+
+const benefits = [
+  { icon: ClipboardCheck, title: 'A clear path to launch', text: 'From first conversation to opening day, every milestone is visible and supported.' },
+  { icon: BarChart3, title: 'Decisions with context', text: 'Simple reporting helps you understand performance and decide what to do next.' },
+  { icon: Headphones, title: 'Support that stays close', text: 'Practical guidance, training, and a partner team that remains available as you grow.' },
+];
 
 function Landingpage() {
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  return (
-    
-      <div className="App">
-        <header className={`header ${scrolled ? 'scrolled' : ''}`}>
-          <div className="container">
-            {/* <nav>
-              <div className="logo">
-                <span className="primary">Franchise</span>
-                <span className="secondary">Hub</span>
-              </div>
-              <ul className="nav-links">
-                <li><a href="#features">Features</a></li>
-                <li><a href="#benefits">Benefits</a></li>
-                <li><a href="#testimonials">Success Stories</a></li>
-                <li><a href="#register" className="btn-secondary">Login</a></li>
-                <li><a href="#register" className="btn-primary">Register Now</a></li>
-              </ul>
-            </nav> */}
-            <Navbar></Navbar>
-          </div>
-        </header>
-
-        <main>
-          <HeroSection />
-          <FeaturesSection />
-          <BenefitsSection />
-          <TestimonialsSection />
-          {/* <RegistrationForm /> */}
-          <Register></Register>
-        </main>
-
-        <Footer />
-      </div>
-  );
+  const [menuOpen, setMenuOpen] = useState(false);
+  const closeMenu = () => setMenuOpen(false);
+  return <div className="landing-page"><header className="landing-nav"><div className="landing-nav-inner"><a href="#home" className="landing-brand" onClick={closeMenu}><span>Franchise</span><b>Hub</b></a><button className="landing-menu-button" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? 'Close menu' : 'Open menu'}>{menuOpen ? <X /> : <Menu />}</button><nav className={`landing-links ${menuOpen ? 'is-open' : ''}`}><a href="#features" onClick={closeMenu}>What you get</a><a href="#process" onClick={closeMenu}>How it works</a><a href="#stories" onClick={closeMenu}>Partner stories</a><Link to="/login" onClick={closeMenu} className="landing-login">Partner login</Link><a href="#register" onClick={closeMenu} className="landing-apply">Apply now <ArrowRight size={16} /></a></nav></div></header><main><section id="home" className="landing-hero"><div className="landing-hero-inner"><div className="landing-hero-copy"><p className="landing-kicker"><Sparkles size={15} /> Built for thoughtful growth</p><h1>A better way to build a lasting franchise.</h1><p className="landing-lede">Bring a proven business model, practical tools, and a committed support team together in one place.</p><div className="landing-actions"><a href="#register" className="landing-button landing-button-primary">Start your application <ArrowRight size={17} /></a><a href="#features" className="landing-button landing-button-quiet">Explore the model</a></div><div className="landing-proof"><div><strong>500+</strong><span>locations supported</span></div><div><strong>95%</strong><span>partner success rate</span></div><div><strong>24/7</strong><span>operational support</span></div></div></div><div className="landing-hero-panel"><div className="panel-topline"><span className="status-dot" /> Partner dashboard</div><div className="panel-heading"><div><span>Network performance</span><strong>Steady, visible progress</strong></div><BarChart3 size={25} /></div><div className="panel-chart"><span className="chart-line chart-line-one" /><span className="chart-line chart-line-two" /><span className="chart-axis axis-one" /><span className="chart-axis axis-two" /><span className="chart-axis axis-three" /><span className="chart-point point-one" /><span className="chart-point point-two" /><span className="chart-point point-three" /><span className="chart-point point-four" /></div><div className="panel-footer"><span>This month</span><strong>+18.4%</strong></div></div></div></section><section id="features" className="landing-section landing-features"><div className="landing-section-heading"><p className="landing-kicker">The partner experience</p><h2>Everything you need to operate with confidence.</h2><p>FranchiseHub keeps the important work clear, connected, and easy to act on.</p></div><div className="landing-benefit-grid">{benefits.map(({ icon: Icon, title, text }) => <article className="landing-benefit" key={title}><div className="landing-icon"><Icon size={21} /></div><h3>{title}</h3><p>{text}</p><a href="#register">Learn more <ArrowRight size={15} /></a></article>)}</div></section><section id="process" className="landing-section landing-process"><div className="landing-process-intro"><p className="landing-kicker">A considered start</p><h2>From interest to opening day, without the guesswork.</h2><p>Our process is designed to answer the right questions early and give you a practical foundation for the road ahead.</p></div><div className="landing-steps"><div><span>01</span><h3>Tell us your plan</h3><p>Share your goals, experience, and the kind of location you want to build.</p></div><div><span>02</span><h3>Meet your support team</h3><p>Review the model together and understand the training, tools, and investment.</p></div><div><span>03</span><h3>Open with momentum</h3><p>Move into launch with a clear plan and continuing operational support.</p></div></div></section><section id="stories" className="landing-story"><div className="landing-story-mark">“</div><blockquote>We wanted a business we could grow carefully. The systems gave us structure, while the people gave us confidence.</blockquote><p>Priya Patel <span>· Franchise partner since 2022</span></p></section><section className="landing-security"><ShieldCheck size={21} /><div><strong>Built around responsible partnership</strong><span>Clear communication, secure access, and useful information at every stage.</span></div></section><Register /></main><footer className="landing-footer"><div><a href="#home" className="landing-brand"><span>Franchise</span><b>Hub</b></a><p>A more considered way to grow a franchise network.</p></div><div className="landing-footer-links"><a href="#features">What you get</a><a href="#process">How it works</a><a href="#register">Apply now</a><Link to="/login">Partner login</Link></div><small>© {new Date().getFullYear()} FranchiseHub</small></footer></div>;
 }
 
 export default Landingpage;

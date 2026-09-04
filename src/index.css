@@ -1,1 +1,29 @@
 @import "tailwindcss";
+
+:root {
+	font-family: Georgia, 'Times New Roman', serif;
+	color: #23312d;
+	background: #f7f6ef;
+	font-synthesis: none;
+	text-rendering: optimizeLegibility;
+}
+
+html { scroll-behavior: smooth; }
+body { margin: 0; min-width: 320px; background: #f7f6ef; }
+button, input, textarea, select { font: inherit; }
+
+.App { background: #f7f6ef; }
+.hero-section { background: #35554a; min-height: 78vh; padding-bottom: 90px; }
+.hero-title { font-family: Georgia, 'Times New Roman', serif; font-weight: 500; letter-spacing: 0; }
+.hero-title .highlight { color: #e7b27f; }
+.hero-subtitle { color: #dbe7dc; }
+.cta-button.primary, .btn-register { background: #e7b27f; color: #23312d; box-shadow: none; border-radius: 8px; }
+.stat-number { color: #e7b27f; }
+.wave-divider path { fill: #f7f6ef; }
+.features-section, .testimonials-section { background: #f7f6ef; }
+.benefits-section { background: #fffdf8; }
+.section-title, .benefits-title { color: #23312d; font-weight: 500; }
+.feature-card, .testimonial-card { border: 1px solid #dce2dc; border-radius: 8px; box-shadow: none; }
+.features-cta, .benefits-testimonial, .cta-container { background: #35554a; border-radius: 8px; box-shadow: none; }
+.benefits-button, .features-cta .cta-button { background: #e7b27f; color: #23312d; border-radius: 8px; box-shadow: none; }
+.footer { background: #23312d; }

@@ -1,5 +1,5 @@
 // HeroSection.jsx
-import React, { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { motion } from 'framer-motion';
 import './HeroSection.css';
 
@@ -33,7 +33,7 @@ const HeroSection = () => {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5, duration: 0.5 }}
             >
-              <a href='#Register' className="cta-button primary">Apply Now</a>
+              <a href='#register' className="cta-button primary">Apply Now</a>
               {/* <button className="cta-button secondary">Learn More</button> */}
             </motion.div>
 

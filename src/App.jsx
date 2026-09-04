@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import FranchHome from './FranchiseDash/FranchHome';
 import LoginForm from './Forms/LoginForm';
-import StartHomepage from './OwnerDash/StartHomepage';
 import Applicantdashh from './OwnerDash/Applicationdashh';
 import Landingpage from './LandingPage/Landingpage';
+import { hasRole } from './lib/auth';
 
 // Placeholder components for each section
 
@@ -15,6 +14,11 @@ import Landingpage from './LandingPage/Landingpage';
 
 
 // Root app component that sets up the router
+// eslint-disable-next-line react/prop-types
+function ProtectedRoute({ role, children }) {
+  return hasRole(role) ? children : <Navigate to="/login" replace />;
+}
+
 const App = () => {
   return (
     <Router>
@@ -23,8 +27,8 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Landingpage></Landingpage>}></Route>
           <Route path="/login" element={<LoginForm></LoginForm>} />
-          <Route path="/frDashboard/*" element={<FranchHome></FranchHome>} />
-          <Route path="/ownerDashboard/*" element={<Applicantdashh></Applicantdashh>} />
+          <Route path="/frDashboard/*" element={<ProtectedRoute role="franchise"><FranchHome /></ProtectedRoute>} />
+          <Route path="/ownerDashboard/*" element={<ProtectedRoute role="admin"><Applicantdashh /></ProtectedRoute>} />
           
         </Routes>
       </div>

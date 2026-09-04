@@ -1,132 +1,26 @@
-import React from 'react'
-import { LineChart, Line, BarChart, Bar, AreaChart, Area, PieChart, Pie, ComposedChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell, ResponsiveContainer } from 'recharts';
-  
+import { useEffect, useState } from 'react';
+import { ArrowRight, CalendarDays, Receipt, TrendingUp } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import api from '../lib/api';
+
 function HomePage() {
+  const [sales, setSales] = useState([]);
+  const [state, setState] = useState({ loading: true, error: '' });
+  const today = new Date().toISOString().split('T')[0];
+  const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0];
 
-    const salesData = [
-    { month: 'Jan', sales: 4000, profit: 2400, target: 3000 },
-    { month: 'Feb', sales: 3000, profit: 1398, target: 3000 },
-    { month: 'Mar', sales: 5000, profit: 3300, target: 3000 },
-    { month: 'Apr', sales: 2780, profit: 3908, target: 3000 },
-    { month: 'May', sales: 1890, profit: 4800, target: 3000 },
-    { month: 'Jun', sales: 2390, profit: 3800, target: 3000 },
-    { month: 'Jul', sales: 3490, profit: 4300, target: 3000 },
-  ];
+  useEffect(() => {
+    api.post('/franchise/fetchSales', { fromdate: monthStart, todate: `${today}T23:59:59.999Z` })
+      .then((response) => setSales(response.data.appdata || []))
+      .catch((error) => setState({ loading: false, error: error.response?.data?.msg || 'Unable to load your overview.' }))
+      .finally(() => setState((current) => ({ ...current, loading: false })));
+  }, [monthStart, today]);
 
-  const salesByCategory = [
-    { name: 'Electronics', value: 35 },
-    { name: 'Clothing', value: 25 },
-    { name: 'Food', value: 20 },
-    { name: 'Books', value: 10 },
-    { name: 'Other', value: 10 },
-  ];
+  const total = sales.reduce((sum, sale) => sum + Number(sale.amount || 0), 0);
+  const latest = [...sales].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+  const cards = [{ label: 'This month', value: `₹${total.toLocaleString()}`, icon: TrendingUp }, { label: 'Sales entries', value: sales.length, icon: Receipt }, { label: 'Last recorded', value: latest[0] ? new Date(latest[0].date).toLocaleDateString() : 'None yet', icon: CalendarDays }];
 
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
-
-  return (
-    <div className="space-y-12 mx-auto w-full">
-      <div className="space-y-4">
-        <h2 className="text-xl font-bold">Line Chart: Trend Analysis Over Time</h2>
-        <p className="text-gray-600">Best for showing continuous data changes and trends over time.</p>
-        <div className="h-64 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={salesData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="sales" stroke="#8884d8" activeDot={{ r: 8 }} />
-              <Line type="monotone" dataKey="target" stroke="#ff7300" strokeDasharray="5 5" />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      <div className="space-y-4">
-        <h2 className="text-xl font-bold">Bar Chart: Comparing Sales by Period</h2>
-        <p className="text-gray-600">Excellent for comparing discrete values across categories or time periods.</p>
-        <div className="h-64 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={salesData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="sales" fill="#8884d8" />
-              <Bar dataKey="profit" fill="#82ca9d" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      <div className="space-y-4">
-        <h2 className="text-xl font-bold">Area Chart: Showing Cumulative Trends</h2>
-        <p className="text-gray-600">Ideal for emphasizing the volume of data and showing cumulative values.</p>
-        <div className="h-64 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={salesData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Area type="monotone" dataKey="sales" stackId="1" stroke="#8884d8" fill="#8884d8" />
-              <Area type="monotone" dataKey="profit" stackId="1" stroke="#82ca9d" fill="#82ca9d" />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      <div className="space-y-4">
-        <h2 className="text-xl font-bold">Pie Chart: Sales Distribution by Category</h2>
-        <p className="text-gray-600">Best for showing proportional distribution or composition of data.</p>
-        <div className="h-64 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={salesByCategory}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                outerRadius={80}
-                fill="#8884d8"
-                dataKey="value"
-                label={({name, percent}) => `${name} ${(percent * 100).toFixed(0)}%`}
-              >
-                {salesByCategory.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      <div className="space-y-4">
-        <h2 className="text-xl font-bold">Composed Chart: Multiple Metrics Visualization</h2>
-        <p className="text-gray-600">Combines different chart types to show multiple metrics in one view.</p>
-        <div className="h-64 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart data={salesData}>
-              <CartesianGrid stroke="#f5f5f5" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="sales" barSize={20} fill="#413ea0" />
-              <Line type="monotone" dataKey="profit" stroke="#ff7300" />
-              <Line type="monotone" dataKey="target" stroke="#4BC0C0" strokeDasharray="5 5" />
-            </ComposedChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-    </div>
-  );
-  
+  return <section className="space-y-7"><div><p className="text-sm text-[#718078]">A calm view of your latest numbers</p><h2 className="mt-1 text-3xl font-semibold tracking-tight">Good morning</h2></div>{state.error && <p className="rounded-lg border border-[#e6caca] bg-[#fff3f1] p-4 text-sm text-[#9a3f3b]">{state.error}</p>}<div className="grid gap-4 md:grid-cols-3">{cards.map(({ label, value, icon: Icon }) => <div key={label} className="rounded-xl border border-[#dce2dc] bg-[#fbfcf9] p-5"><Icon size={19} className="text-[#b06d52]" /><p className="mt-5 text-sm text-[#718078]">{label}</p><p className="mt-1 text-2xl font-semibold">{state.loading ? '...' : value}</p></div>)}</div><div className="grid gap-5 lg:grid-cols-[1.2fr_0.8fr]"><div className="rounded-xl border border-[#dce2dc] bg-[#fbfcf9] p-6"><div className="flex items-center justify-between"><div><p className="text-sm text-[#718078]">Recent activity</p><h3 className="mt-1 text-xl font-semibold">Latest sales</h3></div><Link to="/frDashboard/history" className="flex items-center gap-1 text-sm font-semibold text-[#356b59]">View history <ArrowRight size={16} /></Link></div>{!state.loading && latest.length === 0 ? <p className="mt-8 text-sm text-[#718078]">Your recorded sales will appear here.</p> : <ul className="mt-6 divide-y divide-[#e5e9e5]">{latest.map((sale) => <li key={sale._id} className="flex items-center justify-between py-3 text-sm"><span className="text-[#718078]">{new Date(sale.date).toLocaleDateString()}</span><span className="font-semibold text-[#35554a]">₹{Number(sale.amount).toLocaleString()}</span></li>)}</ul>}</div><div className="rounded-xl bg-[#35554a] p-6 text-[#f7f6ef]"><p className="text-sm text-[#cbded0]">Keep your records current</p><h3 className="mt-2 text-2xl font-semibold">Add today&apos;s sales</h3><p className="mt-3 text-sm leading-6 text-[#dbe7dc]">Small, consistent updates make your performance view more useful.</p><Link to="/frDashboard/sales" className="mt-7 inline-flex items-center gap-2 rounded-lg bg-[#e7b27f] px-4 py-2.5 text-sm font-semibold text-[#23312d]">Record a sale <ArrowRight size={16} /></Link></div></div></section>;
 }
 
-export default HomePage
+export default HomePage;

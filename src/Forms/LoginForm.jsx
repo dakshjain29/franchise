@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route,useNavigate, Link,useLocation } from 'react-router-dom';
-import { AlertCircle, Eye, EyeOff } from 'lucide-react';
-import FranchHome from '../FranchiseDash/FranchHome';
-import axios from 'axios';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AlertCircle, ArrowLeft, Eye, EyeOff, Home, LockKeyhole } from 'lucide-react';
+import api from '../lib/api';
+import { clearAuth, setAuth } from '../lib/auth';
+import './LoginForm.css';
 const LoginForm = () => {
   const [formData, setFormData] = useState({
     email: '',
@@ -54,53 +55,36 @@ const LoginForm = () => {
       }));
     }
   };
-//   async function Acceptapp(id) {
-//     try {
-//         alert("inside the function updatestatus A")
-//       let url = `http://localhost:2008/admin/acceptapp`;
-//       let resp = await axios.post(url,{email:id},{headers:{"Content-Type":"application/x-www-form-urlencoded"}});
-
-//       alert(resp.data.msg);
-//       FetchData(); // Refresh data after update
-      
-//     } catch (error) {
-//       console.error("Error updating status A:", error);
-//     }
-//   }
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (validateForm()) {
       setIsSubmitting(true);
       setSubmitStatus('');
+      clearAuth();
       var {email,password} = formData;
       try {
-        // Simulate API call
-        // await new Promise(resolve => setTimeout(resolve, 1000));
-        alert("inside the function login A")
-        let url = `https://franchisebackend-production.up.railway.app/franchise/loginFranchise`;
-        let resp = await axios.post(url,{fremail:email,pass:password},{headers:{"Content-Type":"application/x-www-form-urlencoded"}});
-        console.log(resp.data.appdata);
-        if(resp.data.appdata.length==0){
-            alert("Invalid Credentials");
-        }
-        else{
-            if(resp.data.appdata.email=="djain_be23@thapar.edu"){
-              localStorage.setItem("email",email)
-              fnavigate("/ownerDashboard");
-            }
-            else{
-            let LoginObj={
-              "email":email,
-              "tkn":resp.data.token
-            }
-            localStorage.setItem("LoginObj",JSON.stringify(LoginObj));
+        try {
+          const adminResponse = await api.post('/admin/login', { email, password });
+          if (adminResponse.data.status) {
+            setAuth({ email, role: adminResponse.data.role, token: adminResponse.data.token });
             setSubmitStatus('success');
-            fnavigate("/frDashboard");
-            console.log('Form submitted:', formData);
-            }
-            
+            fnavigate('/ownerDashboard');
+            return;
+          }
+        } catch (adminError) {
+          if (adminError.response?.status !== 401) throw adminError;
         }
+
+        const franchiseResponse = await api.post('/franchise/loginFranchise', { fremail: email, pass: password });
+        if (!franchiseResponse.data.appdata) {
+          setSubmitStatus('error');
+          return;
+        }
+        const authData = { email, role: 'franchise', token: franchiseResponse.data.token };
+        setAuth(authData);
+        setSubmitStatus('success');
+        fnavigate('/frDashboard');
         
         
         
@@ -114,105 +98,31 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to your account
-          </h2>
-        </div>
-        
-        {submitStatus === 'success' && (
-          <div className="bg-green-50 border border-green-400 text-green-700 px-4 py-3 rounded relative">
-            Login successful!
-          </div>
-        )}
-        
-        {submitStatus === 'error' && (
-          <div className="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-            Login failed. Please try again.
-          </div>
-        )}
-
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                value={formData.email}
-                onChange={handleChange}
-                className={`mt-1 appearance-none relative block w-full px-3 py-2 border ${
-                  errors.email ? 'border-red-300' : 'border-gray-300'
-                } rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-              />
-              {errors.email && (
-                <div className="mt-2 text-sm text-red-600">
-                  <span className="flex items-center">
-                    <AlertCircle className="h-4 w-4 mr-1" />
-                    {errors.email}
-                  </span>
-                </div>
-              )}
-            </div>
-            
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  id="password"
-                  name="password"
-                  type="text"
-                  
-                  value={formData.password}
-                  onChange={handleChange}
-                  className={`mt-1 appearance-none relative block w-full px-3 py-2 border ${
-                    errors.password ? 'border-red-300' : 'border-gray-300'
-                  } rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-500"
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5" />
-                  ) : (
-                    <Eye className="h-5 w-5" />
-                  )}
-                </button>
-              </div>
-              {errors.password && (
-                <div className="mt-2 text-sm text-red-600">
-                  <span className="flex items-center">
-                    <AlertCircle className="h-4 w-4 mr-1" />
-                    {errors.password}
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              onClick={()=>{alert("Sign in button clicked")}}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isSubmitting ? 'Signing in...' : 'Sign in'}
-            </button>
-          </div>
-        </form>
+    <main className="login-page">
+      <div className="login-topbar">
+        <a href="/" className="login-brand"><span>Franchise</span><b>Hub</b></a>
+        <button type="button" className="login-home-button" onClick={() => fnavigate('/')}><Home size={16} /> Go to home</button>
       </div>
-    </div>
+      <div className="login-layout">
+        <section className="login-intro">
+          <p className="login-kicker"><LockKeyhole size={15} /> Secure partner access</p>
+          <h1>Welcome back to your work.</h1>
+          <p>Review your operations, keep sales current, and stay close to the progress you are building.</p>
+          <div className="login-note"><span>FranchiseHub</span><strong>One clear place for every next step.</strong></div>
+        </section>
+        <section className="login-panel">
+          <div className="login-panel-heading"><p className="login-kicker">Partner portal</p><h2>Sign in</h2><p>Use your account credentials to continue.</p></div>
+          {submitStatus === 'success' && <div className="login-message login-success">Login successful.</div>}
+          {submitStatus === 'error' && <div className="login-message login-error">Login failed. Check your details and try again.</div>}
+          <form onSubmit={handleSubmit} className="login-form">
+            <label htmlFor="email">Email address<input id="email" name="email" type="email" autoComplete="email" value={formData.email} onChange={handleChange} className={errors.email ? 'has-error' : ''} />{errors.email && <span className="login-field-error"><AlertCircle size={14} />{errors.email}</span>}</label>
+            <label htmlFor="password">Password<div className="login-password"><input id="password" name="password" type={showPassword ? 'text' : 'password'} autoComplete="current-password" value={formData.password} onChange={handleChange} className={errors.password ? 'has-error' : ''} /><button type="button" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? 'Hide password' : 'Show password'}>{showPassword ? <EyeOff size={18} /> : <Eye size={18} />}</button></div>{errors.password && <span className="login-field-error"><AlertCircle size={14} />{errors.password}</span>}</label>
+            <button type="submit" disabled={isSubmitting} className="login-submit">{isSubmitting ? 'Signing in...' : 'Sign in'} <ArrowLeft size={16} className="login-submit-arrow" /></button>
+          </form>
+          <a href="/" className="login-back-link"><ArrowLeft size={15} /> Return to home</a>
+        </section>
+      </div>
+    </main>
   );
 };
 

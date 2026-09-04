@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HiMenu, HiX } from 'react-icons/hi';
-import { FaUserCircle } from 'react-icons/fa';
+import { UserCircle } from 'lucide-react';
 import './Navbar.css';
 
 const Navbar = () => {
@@ -100,10 +100,10 @@ const Navbar = () => {
             </ul>
 
             <div className="navbar-actions">
-              {/* <a href="#login" className="btn-login">
-                <FaUserCircle className="login-icon" />
-                <span>Login</span>
-              </a> */}
+              <a href="/login" className="btn-login">
+                <UserCircle className="login-icon" size={18} />
+                <span>Partner login</span>
+              </a>
               <a href="#register" className="btn-register">
                 Register Now
               </a>
@@ -148,12 +148,12 @@ const Navbar = () => {
                   </a>
                 </li>
                 <li className="mobile-divider"></li>
-                {/* <li>
-                  <a href="#login" onClick={closeMenu} className="mobile-login">
-                    <FaUserCircle className="login-icon" />
-                    <span>Login</span>
+                <li>
+                  <a href="/login" onClick={closeMenu} className="mobile-login">
+                    <UserCircle className="login-icon" size={18} />
+                    <span>Partner login</span>
                   </a>
-                </li> */}
+                </li>
                 <li>
                   <a href="#register" onClick={closeMenu} className="mobile-register">
                     Register Now

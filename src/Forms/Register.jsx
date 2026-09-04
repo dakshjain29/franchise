@@ -317,10 +317,10 @@
 // };
 // export default Register
 
-import React, { useState } from "react";
+import { useState } from "react";
 import '../index.css'
-import axios from 'axios'
-import { BrowserRouter as Router, Routes, Route, useNavigate, Link, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import api from '../lib/api';
 
 const Register = () => {
   var [Appobj, setobj] = useState({
@@ -350,11 +350,7 @@ const Register = () => {
   }
 
   async function dosave() {
-    alert(Appobj)
-    let url = "https://franchisebackend-production.up.railway.app/user/doSaveUserPost"
-    let resp = await axios.post(url, Appobj, {
-      headers: { "Content-Type": "application/x-www-form-urlencoded" }
-    });
+    let resp = await api.post('/user/doSaveUserPost', Appobj);
 
     if (resp.data.status == true) {
       alert(resp.data.msg)
